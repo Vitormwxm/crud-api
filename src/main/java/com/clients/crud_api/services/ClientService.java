@@ -24,8 +24,7 @@ public class ClientService {
     }
 
     public ClientDTO findById(Long id) {
-        Optional<Client> result = clientRepository.findById(id);
-        Client entity = result.orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado"));
-        return new ClientDTO(entity);
+        Client result = clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado"));
+        return new ClientDTO(result);
     }
 }
