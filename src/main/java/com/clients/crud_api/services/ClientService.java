@@ -3,7 +3,9 @@ package com.clients.crud_api.services;
 import com.clients.crud_api.dto.ClientDTO;
 import com.clients.crud_api.entities.Client;
 import com.clients.crud_api.repositories.ClientRepository;
+import com.clients.crud_api.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
@@ -19,5 +21,11 @@ public class ClientService {
     public List<ClientDTO> findAll() {
         List<Client> client = clientRepository.findAll();
         return client.stream().map(x -> new ClientDTO(x)).toList();
+    }
+
+    public ClientDTO findById(Long id) {
+        Optional<Client> result = clientRepository.findById(id);
+        Client entity = result.orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado"));
+        return new ClientDTO(entity);
     }
 }
