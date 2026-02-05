@@ -4,6 +4,8 @@ import com.clients.crud_api.dto.ClientDTO;
 import com.clients.crud_api.entities.Client;
 import com.clients.crud_api.repositories.ClientRepository;
 import com.clients.crud_api.services.exceptions.ResourceNotFoundException;
+import jakarta.transaction.Transactional;
+import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Service;
@@ -38,5 +40,27 @@ public class ClientService {
 
         client = clientRepository.save(client);
         return  new ClientDTO(client);
+    }
+
+    @Transactional
+    public ClientDTO update(Long id, ClientDTO clientDTO) {
+        try {
+            Client client = clientRepository.getReferenceById(id);
+            copyDtoToEntity(clientDTO, client);
+
+            client = clientRepository.save(client);
+            return new ClientDTO(client);
+        } catch (LazyInitializationException e) {
+            throw new ResourceNotFoundException("Recurso não encontrado");
+        }
+
+    }
+
+    private void copyDtoToEntity(ClientDTO clientDTO, Client client) {
+        client.setName(clientDTO.getName());
+        client.setCpf(clientDTO.getCpf());
+        client.setIncome(clientDTO.getIncome());
+        client.setChildren(clientDTO.getChildren());
+        client.setBirthDate(clientDTO.getBirthDate());
     }
 }
