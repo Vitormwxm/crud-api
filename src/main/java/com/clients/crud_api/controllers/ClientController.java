@@ -4,8 +4,11 @@ package com.clients.crud_api.controllers;
 import com.clients.crud_api.dto.ClientDTO;
 import com.clients.crud_api.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -16,31 +19,35 @@ public class ClientController {
     private ClientService clientService;
 
     @GetMapping
-    public List<ClientDTO> findAll() {
+    public ResponseEntity<List<ClientDTO>>  findAll() {
         List<ClientDTO> dto = clientService.findAll();
-        return dto;
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping(value = "/{id}")
-    public ClientDTO findById(@PathVariable Long id) {
+    public ResponseEntity<ClientDTO>  findById(@PathVariable Long id) {
         ClientDTO dto = clientService.findById(id);
-        return dto;
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping
-    public ClientDTO insert(@RequestBody ClientDTO clientDTO) {
+    public ResponseEntity<ClientDTO> insert(@RequestBody ClientDTO clientDTO) {
         ClientDTO dto = clientService.insert(clientDTO);
-        return dto;
+
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(dto.getId()).toUri();
+        return ResponseEntity.created(uri).body(dto);
     }
 
     @PutMapping(value = "/{id}")
-    public ClientDTO update(@PathVariable Long id, @RequestBody ClientDTO clientDTO) {
+    public ResponseEntity<ClientDTO> update(@PathVariable Long id, @RequestBody ClientDTO clientDTO) {
          ClientDTO dto = clientService.update(id, clientDTO);
-        return dto;
+        return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         clientService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
