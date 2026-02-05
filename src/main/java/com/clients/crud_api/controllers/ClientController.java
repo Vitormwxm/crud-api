@@ -4,10 +4,7 @@ package com.clients.crud_api.controllers;
 import com.clients.crud_api.dto.ClientDTO;
 import com.clients.crud_api.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,6 +24,12 @@ public class ClientController {
     @GetMapping(value = "/{id}")
     public ClientDTO findById(@PathVariable Long id) {
         ClientDTO dto = clientService.findById(id);
+        return dto;
+    }
+
+    @PostMapping
+    public ClientDTO insert(@RequestBody ClientDTO clientDTO) {
+        ClientDTO dto = clientService.insert(clientDTO);
         return dto;
     }
 }
