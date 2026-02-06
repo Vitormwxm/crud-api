@@ -5,6 +5,8 @@ import com.clients.crud_api.dto.ClientDTO;
 import com.clients.crud_api.services.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -20,13 +22,13 @@ public class ClientController {
     private ClientService clientService;
 
     @GetMapping
-    public ResponseEntity<List<ClientDTO>>  findAll() {
-        List<ClientDTO> dto = clientService.findAll();
-        return ResponseEntity.ok(dto);
+    public Page<ClientDTO> findAll(Pageable pageable) {
+        Page dto = clientService.findAll (pageable);
+        return dto;
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<ClientDTO>  findById(@PathVariable Long id) {
+    public ResponseEntity<ClientDTO> findById(@PathVariable Long id) {
         ClientDTO dto = clientService.findById(id);
         return ResponseEntity.ok(dto);
     }

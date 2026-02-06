@@ -10,6 +10,8 @@ import jakarta.transaction.Transactional;
 import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
@@ -22,9 +24,9 @@ public class ClientService {
     @Autowired
     ClientRepository clientRepository;
 
-    public List<ClientDTO> findAll() {
-        List<Client> client = clientRepository.findAll();
-        return client.stream().map(x -> new ClientDTO(x)).toList();
+    public Page<ClientDTO> findAll(Pageable pageable) {
+        Page<Client> client = clientRepository.findAll(pageable);
+        return client.map(x -> new ClientDTO(x));
     }
 
     public ClientDTO findById(Long id) {
