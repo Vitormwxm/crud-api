@@ -3,7 +3,9 @@ package com.clients.crud_api.services;
 import com.clients.crud_api.dto.ClientDTO;
 import com.clients.crud_api.entities.Client;
 import com.clients.crud_api.repositories.ClientRepository;
+import com.clients.crud_api.services.exceptions.DatabaseException;
 import com.clients.crud_api.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,15 +46,17 @@ public class ClientService {
 
     @Transactional
     public ClientDTO update(Long id, ClientDTO clientDTO) {
-        try {
-            Client client = clientRepository.getReferenceById(id);
-            copyDtoToEntity(clientDTO, client);
 
-            client = clientRepository.save(client);
-            return new ClientDTO(client);
-        } catch (LazyInitializationException e) {
-            throw new ResourceNotFoundException("Recurso não encontrado");
+        if (clientRepository.existsById(id) == false) {
+            throw new DatabaseException("Recurso não encontrado no banco");
         }
+
+        Client client = clientRepository.getReferenceById(id);
+
+        copyDtoToEntity(clientDTO, client);
+
+        client = clientRepository.save(client);
+        return new ClientDTO(client);
 
     }
 
