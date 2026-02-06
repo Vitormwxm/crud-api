@@ -1,16 +1,24 @@
 package com.clients.crud_api.dto;
 
 import com.clients.crud_api.entities.Client;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
 public class ClientDTO {
 
     private Long id;
+    @Size(min = 3, max = 80, message = "Nome precisa ter de 3 a 80 caracteres")
+    @NotBlank(message = "Campo requerido")
     private String name;
+    @Size(min = 11, max = 11, message = "O Cpf deve ter exatamente 11 digitos")
+    @Pattern(regexp = "\\d+", message = "O cpf deve conter apenas números")
     private String cpf;
+    @PositiveOrZero(message = "O rendimento não pode ser negativo")
     private Double income;
+    @PastOrPresent(message = "A data de nascimento não pode ser futura")
     private LocalDate birthDate;
+    @PositiveOrZero(message = "O numero de filhos não pode ser negativo")
     private Integer children;
 
     public ClientDTO() {
